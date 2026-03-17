@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog,
     QLabel, QSlider, QGroupBox, QTreeWidget, QTreeWidgetItem,
     QDialog, QListWidget, QLineEdit, QListWidgetItem, QFileIconProvider,
-    QCheckBox, QMessageBox
+    QCheckBox, QApplication
 )
 from PyQt6.QtCore import Qt, QSize, QTimer
 from PyQt6.QtGui import QIcon
@@ -113,8 +113,19 @@ class SettingsWindow(QWidget):
         self.installed_apps_btn = QPushButton("Scan Apps")
         self.add_button = QPushButton("Browse")
         self.remove_button = QPushButton("Remove")
-        
-        # Distinct Save Button
+        self.quit_button = QPushButton("Quit MiniDeck")
+        self.quit_button.setStyleSheet("""
+            QPushButton { 
+                background-color: #3E3E42; 
+                color: #FF4B4B; /* Red text to indicate closing */
+                border: 1px solid #FF4B4B;
+            }
+            QPushButton:hover { 
+                background-color: #FF4B4B; 
+                color: white; 
+            }
+        """)
+        self.quit_button.clicked.connect(self.quit_application)
         self.save_button = QPushButton("Save Config")
         self.save_button.setStyleSheet("QPushButton { background-color: #00D2FF; color: #121212; border: none; } QPushButton:hover { background-color: #55E0FF; }")
 
@@ -123,6 +134,8 @@ class SettingsWindow(QWidget):
         self.save_button.clicked.connect(self.save_settings)
         self.installed_apps_btn.clicked.connect(self.open_installed_apps)
 
+        button_layout.addWidget(self.quit_button) # Add it first
+        button_layout.addSpacing(20) # Give it some room
         button_layout.addWidget(self.installed_apps_btn)
         button_layout.addWidget(self.add_button)
         button_layout.addWidget(self.remove_button)
@@ -226,7 +239,6 @@ class SettingsWindow(QWidget):
         keys = self.hotkey_listener.target_keys
         
         save_apps(self.applications, icon_size, radius, clamp, keys)
-        print("Settings saved.")
 
     def closeEvent(self, event):
         self.hide()
@@ -332,3 +344,11 @@ class SettingsWindow(QWidget):
         # Stop and restart ensures we don't crash if they click 5 times fast
         self.msg_timer.stop() 
         self.msg_timer.start(3000)
+
+    def quit_application(self):
+        from PyQt6.QtWidgets import QApplication
+        
+        # This is the cleanest way to shut down a PyQt app from a child window
+        QApp = QApplication.instance()
+        if QApp:
+            QApp.quit()

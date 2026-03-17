@@ -2,28 +2,40 @@ import json
 import os
 from application import Application
 
-# APPDATA_PATH = os.path.join(os.environ['APPDATA'], 'MiniDeck')
-# if not os.path.exists(APPDATA_PATH):
-#     os.makedirs(APPDATA_PATH)
+APPDATA_PATH = os.path.join(os.environ['APPDATA'], 'MiniDeck')
+if not os.path.exists(APPDATA_PATH):
+    os.makedirs(APPDATA_PATH)
 
-# CONFIG_FILE = os.path.join(APPDATA_PATH, "config.json")
-CONFIG_FILE = 'config.json'
+CONFIG_FILE = os.path.join(APPDATA_PATH, "config.json")
+# CONFIG_FILE = 'config.json'
 
 def load_data():
     if not os.path.exists(CONFIG_FILE):
+        # --- Default App Logic ---
+        # Path to standard Windows Notepad
+        notepad_path = os.path.join(os.environ['WINDIR'], 'System32', 'notepad.exe')
+        
+        default_apps = []
+        if os.path.exists(notepad_path):
+            default_apps.append({
+                "name": "Notepad",
+                "exe_location": notepad_path,
+                "app_id": None
+            })
+
         default_data = {
             "icon_size": 48,
             "radius": 180,
             "clamp_to_screen": True,
-            "apps": [],
+            "apps": default_apps, # Start with Notepad!
             "hotkey": ["cmd", "shift"]
         }
         save_data(default_data)
         return default_data
 
+    # ... rest of your load_data() code ...
     with open(CONFIG_FILE, "r") as f:
         data = json.load(f)
-        # Fallbacks for updating older config versions
         if "clamp_to_screen" not in data:
             data["clamp_to_screen"] = True
         if "hotkey" not in data:

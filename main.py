@@ -7,12 +7,13 @@ from PyQt6.QtWidgets import (
     QApplication,
     QFileIconProvider,
     QSystemTrayIcon,
-    QMenu
+    QMenu,
+    QSystemTrayIcon
 )
 from PyQt6.QtGui import QAction
 from PyQt6.QtCore import pyqtSignal, QObject
 
-import sys
+import sys, os
 
 
 class AppSignals(QObject):
@@ -22,6 +23,8 @@ class AppSignals(QObject):
 
 class MiniDeck:
     def __init__(self):
+        config_path = os.path.join(os.environ['APPDATA'], 'MiniDeck', 'config.json')
+        self.is_first_run = not os.path.exists(config_path)
         self.app = QApplication(sys.argv)
 
         ## -----------------------------
@@ -110,6 +113,24 @@ class MiniDeck:
         self.tray_icon.activated.connect(self.tray_clicked)
 
         self.tray_icon.show()
+
+        # -----------------------------
+        # First Run Welcome
+        # -----------------------------
+        # Check if this is a fresh install (no config yet)
+        if self.is_first_run:
+            # Increase delay slightly to ensure Windows is ready to show the toast
+            from PyQt6.QtCore import QTimer
+            QTimer.singleShot(2000, self.show_welcome_message)
+
+    def show_welcome_message(self):
+        # tray_icon.showMessage(Title, Message, IconType, DurationInMS)
+        self.tray_icon.showMessage(
+            "MiniDeck is Ready!",
+            "Press Win + Shift to open your Radial Menu. Right-click the tray icon for settings.",
+            QSystemTrayIcon.MessageIcon.Information,
+            5000 # Show for 5 seconds
+        )
 
     # -----------------------------
     # Tray double click

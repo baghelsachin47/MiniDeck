@@ -139,15 +139,11 @@ class Application:
                         cwd=exe_folder,
                         shell=True
                     )
-                    print("Launch Successful")
-                except Exception as e:
-                    print(f"CRITICAL ERROR launching exe: {e}")
+                except:
+                    pass
                 return
-
-            print(f"Cannot launch {self.name}")
-
-        except Exception as e:
-            print(f"Launch error for {self.name}: {e}")
+        except:
+            pass
 
     # ---------------- MAIN LOGIC ----------------
     def open_instance(self):

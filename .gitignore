@@ -1,1 +1,25 @@
-/venv
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+Output/
+.env
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+# User Data (IMPORTANT: Don't share your private config)
+config.json
+
+# IDEs
+.vscode/
+.idea/
+
+# Windows
+Thumbs.db
+desktop.ini
+
+config.json
