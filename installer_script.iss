@@ -15,6 +15,7 @@ OutputBaseFilename=MiniDeck_Setup_v1.0
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
+LicenseFile=LICENSE
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
