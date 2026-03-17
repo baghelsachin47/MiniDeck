@@ -1,0 +1,16 @@
+{
+    "icon_size": 28,
+    "radius": 113,
+    "clamp_to_screen": false,
+    "apps": [
+        {
+            "name": "Notepad",
+            "exe_location": "C:\\Windows\\system32\\notepad.exe",
+            "app_id": null
+        }
+    ],
+    "hotkey": [
+        "cmd",
+        "shift"
+    ]
+}
