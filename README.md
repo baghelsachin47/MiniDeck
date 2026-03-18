@@ -20,7 +20,7 @@
 ## 🛠️ Installation
 
 ### The Easy Way (Installer)
-1.  Download `MiniDeck_Setup_v1.0.exe` from the [Releases](https://github.com/yourusername/MiniDeck/releases) page.
+1.  Download `MiniDeck_Setup_v1.0.exe` from the [Releases](https://github.com/baghelsachin47/MiniDeck/releases) page.
 2.  Run the installer.
     * *Note: Since the app is unsigned, Windows may show a "SmartScreen" warning. Click **More Info** -> **Run Anyway**.*
 3.  Launch MiniDeck from your Desktop or Start Menu.
@@ -52,18 +52,7 @@ To move from raw code to a professional Windows installer, follow these steps:
 Use **PyInstaller** to compile the Python scripts into a standalone folder. Run this command in your terminal:
 
 ```bash
-pyinstaller --noconsole --name "MiniDeck" \
---hidden-import="pynput.keyboard._win32" \
---hidden-import="pynput.mouse._win32" \
---add-data "application.py;." \
---add-data "db.py;." \
---add-data "Hotkey.py;." \
---add-data "installedapps.py;." \
---add-data "RadialMenu.py;." \
---add-data "settings.py;." \
---add-data "theme.py;." \
-main.py
-```
+pyinstaller --noconsole --name "MiniDeck" --hidden-import="pynput.keyboard._win32" --hidden-import="pynput.mouse._win32" main.py```
 
 ### 2. Create the Installer (Inno Setup)
 To generate the single MiniDeck_Setup.exe file:

@@ -4,6 +4,7 @@
 *$py.class
 venv/
 Output/
+.ruff_cache
 .env
 
 # PyInstaller
