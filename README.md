@@ -52,7 +52,8 @@ To move from raw code to a professional Windows installer, follow these steps:
 Use **PyInstaller** to compile the Python scripts into a standalone folder. Run this command in your terminal:
 
 ```bash
-pyinstaller --noconsole --name "MiniDeck" --hidden-import="pynput.keyboard._win32" --hidden-import="pynput.mouse._win32" main.py```
+pyinstaller --noconsole --name "MiniDeck" --hidden-import="pynput.keyboard._win32" --hidden-import="pynput.mouse._win32" main.py
+```
 
 ### 2. Create the Installer (Inno Setup)
 To generate the single MiniDeck_Setup.exe file:
