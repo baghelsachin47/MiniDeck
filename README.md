@@ -7,6 +7,7 @@
 ## ✨ Features
 
 * **Radial Overlay:** A sleek, animated circular menu that appears at your cursor.
+* **Smart Window Cycling** If multiple instances of an app are already open, MiniDeck intelligently cycles through each one and brings them into focous one by one.
 * **Smart App Discovery:** Automatically scans your system for installed Windows (UWP) apps and standard executables.
 * **Custom Hotkeys:** Record your own keyboard combinations (Default: `Win + Shift`).
 * **Premium Theme:** Modern Dark Mode UI with Cyan accents and smooth hover effects.
@@ -35,7 +36,8 @@ If you are a developer and want to run it manually:
 ## ⌨️ How to Use
 
 1.  **Open Menu:** Hold `Win + Shift` (Default).
-2.  **Launch:** Click any icon to open the app.
+2.  **Launch & Cycle:** Click any icon to open the app.
+    * If the app is already open, click again to cycle through open windows and bring them to focus.
 3.  **Settings:** Right-click the **Computer Icon** in your System Tray (bottom right of your taskbar).
 4.  **Add Apps:** Use the "Scan Apps" button in Settings to automatically find apps, or "Browse" to add a specific `.exe`.
 5.  **Exit:** Use the "Quit MiniDeck" button in Settings or right-click the tray icon and select "Exit."
@@ -68,10 +70,38 @@ To generate the single MiniDeck_Setup.exe file:
 
 1. Install Inno Setup 6+.
 
-2. Open the installer_script.iss file included in this repository.
+2. Open the [installer_script.iss](installer_script.iss) file included in this repository.
 
 3. Ensure the Source paths in the .iss file point to your local dist/MiniDeck directory.
 
 4. Click Build > Compile (or press F9).
 
 Your production-ready installer will appear in the Output/ folder.
+
+---
+
+## 🧑‍💻 Development & Contributing
+
+We maintain strict code quality standards to ensure MiniDeck remains fast and bug-free. We use **[Ruff](https://docs.astral.sh/ruff/)** as our primary linter and formatter.
+
+### Setting Up the Dev Environment
+If you want to contribute to the codebase, please ensure your code passes all checks before submitting a Pull Request.
+
+1. Install Ruff:
+   ```bash
+   pip install ruff
+   ```
+2. Lint the code (Finds bugs and style violations):
+    ```bash
+    ruff check .
+    ```
+3. Format the code (Auto-formats to PEP 8 standards):
+    ```bash
+    ruff format .
+    ```
+***Note**: All configuration for Ruff is handled automatically via the included pyproject.toml file.*
+
+## 📜 License
+Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
+
+Built with ❤️ for productivity.

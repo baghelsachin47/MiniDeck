@@ -1,7 +1,9 @@
-from PyQt6.QtWidgets import QWidget, QApplication
-from PyQt6.QtGui import QPainter, QColor, QCursor, QRadialGradient, QPen
-from PyQt6.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve
 import math
+
+from PyQt6.QtCore import QEasingCurve, QPropertyAnimation, Qt, QTimer
+from PyQt6.QtGui import QColor, QCursor, QPainter, QPen, QRadialGradient
+from PyQt6.QtWidgets import QApplication, QWidget
+
 
 class RadialMenu(QWidget):
     def __init__(self, list_apps):

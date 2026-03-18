@@ -1,0 +1,29 @@
+[project]
+name = "minideck"
+version = "1.0.0"
+description = "An open source premium radial menu for Windows productivity."
+dependencies = [
+    "PyQt6>=6.4.0",
+    "pynput>=1.7.6",
+    "pywin32>=305",
+]
+requires-python = ">=3.11"
+
+[tool.ruff]
+# The "New Standard" - Replaces Pylint, Black, and isort
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+# Select rules: E (Error), F (Pyflakes), I (Import sorting), B (Bugbear)
+select = ["E", "F", "I", "B"]
+ignore = ["E501"] # Ignore long lines (Black handles this)
+
+[tool.ruff.format]
+# Acts like Black
+quote-style = "double"
+indent-style = "space"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

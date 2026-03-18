@@ -1,17 +1,31 @@
 import os
-from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog,
-    QLabel, QSlider, QGroupBox, QTreeWidget, QTreeWidgetItem,
-    QDialog, QListWidget, QLineEdit, QListWidgetItem, QFileIconProvider,
-    QCheckBox, QApplication
-)
-from PyQt6.QtCore import Qt, QSize, QTimer
+
+from PyQt6.QtCore import QSize, Qt, QTimer
 from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import (
+    QCheckBox,
+    QDialog,
+    QFileDialog,
+    QFileIconProvider,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QListWidget,
+    QListWidgetItem,
+    QPushButton,
+    QSlider,
+    QTreeWidget,
+    QTreeWidgetItem,
+    QVBoxLayout,
+    QWidget,
+)
 
 from application import Application
 from db import save_apps
 from installedapps import detect_all_apps
 from theme import MODERN_THEME  # Ensure you have created theme.py!
+
 
 class AppTreeWidget(QTreeWidget):
     def __init__(self, settings_window):
@@ -22,13 +36,14 @@ class AppTreeWidget(QTreeWidget):
         super().dropEvent(event)
         self.settings_window.rebuild_app_order()
 
+
 class SettingsWindow(QWidget):
     def __init__(self, applications, radial_menu, icon_size, radius, hotkey_listener):
         super().__init__()
 
         self.setWindowTitle("MiniDeck Settings")
         self.resize(550, 650)
-        
+
         # Apply the premium theme
         self.setStyleSheet(MODERN_THEME)
 
@@ -70,14 +85,14 @@ class SettingsWindow(QWidget):
 
         # --- HOTKEY SECTION ---
         settings_layout.addWidget(QLabel("Global Hotkey"))
-        
+
         # 1. Create the button object first
         self.hotkey_button = QPushButton()
-        
+
         # 2. Set the text based on current hotkey
         current_keys = " + ".join(self.hotkey_listener.target_keys).upper()
         self.hotkey_button.setText(f"Hotkey: {current_keys}")
-        
+
         # 3. Apply the Focus fix so 'Space' can be recorded
         self.hotkey_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.hotkey_button.clicked.connect(self.start_recording)
@@ -85,7 +100,9 @@ class SettingsWindow(QWidget):
 
         # Screen Clamp Checkbox
         self.clamp_checkbox = QCheckBox("Keep menu inside screen bounds")
-        self.clamp_checkbox.setChecked(getattr(self.radial_menu, 'clamp_to_screen', True))
+        self.clamp_checkbox.setChecked(
+            getattr(self.radial_menu, "clamp_to_screen", True)
+        )
         self.clamp_checkbox.stateChanged.connect(self.change_clamp)
         settings_layout.addWidget(self.clamp_checkbox)
 
@@ -127,15 +144,17 @@ class SettingsWindow(QWidget):
         """)
         self.quit_button.clicked.connect(self.quit_application)
         self.save_button = QPushButton("Save Config")
-        self.save_button.setStyleSheet("QPushButton { background-color: #00D2FF; color: #121212; border: none; } QPushButton:hover { background-color: #55E0FF; }")
+        self.save_button.setStyleSheet(
+            "QPushButton { background-color: #00D2FF; color: #121212; border: none; } QPushButton:hover { background-color: #55E0FF; }"
+        )
 
         self.add_button.clicked.connect(self.add_app)
         self.remove_button.clicked.connect(self.remove_app)
         self.save_button.clicked.connect(self.save_settings)
         self.installed_apps_btn.clicked.connect(self.open_installed_apps)
 
-        button_layout.addWidget(self.quit_button) # Add it first
-        button_layout.addSpacing(20) # Give it some room
+        button_layout.addWidget(self.quit_button)  # Add it first
+        button_layout.addSpacing(20)  # Give it some room
         button_layout.addWidget(self.installed_apps_btn)
         button_layout.addWidget(self.add_button)
         button_layout.addWidget(self.remove_button)
@@ -156,26 +175,33 @@ class SettingsWindow(QWidget):
         self.recorded_keys = set()
         self.hotkey_button.setText("Recording... (Release keys to stop)")
         self.hotkey_button.setStyleSheet("background-color: #FF4B4B; color: white;")
-        
+
         from pynput import keyboard
-        self.recorder = keyboard.Listener(on_press=self._record_press, on_release=self._record_release)
+
+        self.recorder = keyboard.Listener(
+            on_press=self._record_press, on_release=self._record_release
+        )
         self.recorder.start()
 
     def _record_press(self, key):
-        if hasattr(key, 'name'): name = key.name
-        elif hasattr(key, 'char'): name = key.char
-        else: name = str(key)
-        
-        if name: self.recorded_keys.add(name)
+        if hasattr(key, "name"):
+            name = key.name
+        elif hasattr(key, "char"):
+            name = key.char
+        else:
+            name = str(key)
+
+        if name:
+            self.recorded_keys.add(name)
 
     def _record_release(self, key):
         keys_list = list(self.recorded_keys)
         self.recorder.stop()
-        
+
         # Update logic and UI
         self.hotkey_button.setText(f"Hotkey: {' + '.join(keys_list).upper()}")
-        self.hotkey_button.setStyleSheet("") # Reset style
-        
+        self.hotkey_button.setStyleSheet("")  # Reset style
+
         # Update actual listener in memory
         self.hotkey_listener.update_keys(keys_list)
 
@@ -195,16 +221,24 @@ class SettingsWindow(QWidget):
         self.app_list.clear()
         for app in self.applications:
             item = QTreeWidgetItem()
-            item.setFlags(Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsDragEnabled)
+            item.setFlags(
+                Qt.ItemFlag.ItemIsSelectable
+                | Qt.ItemFlag.ItemIsEnabled
+                | Qt.ItemFlag.ItemIsDragEnabled
+            )
             item.setText(0, app.name)
-            path_text = str(app.exe_location) if app.exe_location else f"[UWP] {app.app_id}"
+            path_text = (
+                str(app.exe_location) if app.exe_location else f"[UWP] {app.app_id}"
+            )
             item.setText(1, path_text)
             if app.icon:
                 item.setIcon(0, QIcon(app.icon))
             self.app_list.addTopLevelItem(item)
 
     def add_app(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, "Select App", "", "Executables (*.exe)")
+        file_path, _ = QFileDialog.getOpenFileName(
+            self, "Select App", "", "Executables (*.exe)"
+        )
         if file_path:
             name = os.path.splitext(os.path.basename(file_path))[0]
             new_app = Application(name, file_path)
@@ -237,7 +271,7 @@ class SettingsWindow(QWidget):
         radius = self.radial_menu.radius
         clamp = self.radial_menu.clamp_to_screen
         keys = self.hotkey_listener.target_keys
-        
+
         save_apps(self.applications, icon_size, radius, clamp, keys)
 
     def closeEvent(self, event):
@@ -278,7 +312,13 @@ class SettingsWindow(QWidget):
         # Message Timer
         self.msg_timer = QTimer()
         self.msg_timer.setSingleShot(True)
-        self.msg_timer.timeout.connect(lambda: self.status_label.setText("") if not self.status_label.isHidden() else None)
+        self.msg_timer.timeout.connect(
+            lambda: (
+                self.status_label.setText("")
+                if not self.status_label.isHidden()
+                else None
+            )
+        )
 
         # --- THE FIX ---
         # Stop the timer if the dialog is closed before the 3 seconds are up
@@ -286,8 +326,10 @@ class SettingsWindow(QWidget):
 
         btn_row = QHBoxLayout()
         add_btn = QPushButton("Add Selected")
-        add_btn.setStyleSheet("QPushButton { background-color: #00D2FF; color: #121212; border: none; }")
-        
+        add_btn.setStyleSheet(
+            "QPushButton { background-color: #00D2FF; color: #121212; border: none; }"
+        )
+
         cancel_btn = QPushButton("Close")
         cancel_btn.clicked.connect(dialog.reject)
         add_btn.clicked.connect(self.add_selected_app)
@@ -304,7 +346,8 @@ class SettingsWindow(QWidget):
         self.app_list_widget.clear()
         for app in apps:
             item = QListWidgetItem(app.name)
-            if app.icon: item.setIcon(QIcon(app.icon))
+            if app.icon:
+                item.setIcon(QIcon(app.icon))
             item.setData(Qt.ItemDataRole.UserRole, app)
             self.app_list_widget.addItem(item)
 
@@ -321,8 +364,8 @@ class SettingsWindow(QWidget):
 
         # Check for duplicates
         is_duplicate = any(
-            (app.exe_location == new_app.exe_location and app.exe_location is not None) or
-            (app.app_id == new_app.app_id and app.app_id is not None)
+            (app.exe_location == new_app.exe_location and app.exe_location is not None)
+            or (app.app_id == new_app.app_id and app.app_id is not None)
             for app in self.applications
         )
 
@@ -330,24 +373,24 @@ class SettingsWindow(QWidget):
             # Show red error message
             self.status_label.setStyleSheet("color: #FF4B4B; font-weight: bold;")
             self.status_label.setText(f"'{new_app.name}' is already in the menu.")
-            self.msg_timer.start(3000) # Clear after 3 seconds
+            self.msg_timer.start(3000)  # Clear after 3 seconds
             return
 
         # Success path
         self.applications.append(new_app)
         self.refresh_app_list()
         self.radial_menu.update_apps(self.applications)
-        
+
         # Show cyan success message
         self.status_label.setStyleSheet("color: #00D2FF; font-weight: bold;")
         self.status_label.setText(f"Added {new_app.name} successfully!")
         # Stop and restart ensures we don't crash if they click 5 times fast
-        self.msg_timer.stop() 
+        self.msg_timer.stop()
         self.msg_timer.start(3000)
 
     def quit_application(self):
         from PyQt6.QtWidgets import QApplication
-        
+
         # This is the cleanest way to shut down a PyQt app from a child window
         QApp = QApplication.instance()
         if QApp:

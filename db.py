@@ -1,5 +1,6 @@
 import json
 import os
+
 from application import Application
 
 APPDATA_PATH = os.path.join(os.environ['APPDATA'], 'MiniDeck')

@@ -1,19 +1,14 @@
-from db import load_apps, load_data
-from RadialMenu import RadialMenu
-from Hotkey import HotKeyListener
-from settings import SettingsWindow
+import os
+import sys
 
-from PyQt6.QtWidgets import (
-    QApplication,
-    QFileIconProvider,
-    QSystemTrayIcon,
-    QMenu,
-    QSystemTrayIcon
-)
+from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtGui import QAction
-from PyQt6.QtCore import pyqtSignal, QObject
+from PyQt6.QtWidgets import QApplication, QFileIconProvider, QMenu, QSystemTrayIcon
 
-import sys, os
+from db import load_apps, load_data
+from Hotkey import HotKeyListener
+from RadialMenu import RadialMenu
+from settings import SettingsWindow
 
 
 class AppSignals(QObject):
@@ -23,7 +18,7 @@ class AppSignals(QObject):
 
 class MiniDeck:
     def __init__(self):
-        config_path = os.path.join(os.environ['APPDATA'], 'MiniDeck', 'config.json')
+        config_path = os.path.join(os.environ["APPDATA"], "MiniDeck", "config.json")
         self.is_first_run = not os.path.exists(config_path)
         self.app = QApplication(sys.argv)
 
@@ -34,7 +29,7 @@ class MiniDeck:
         self.icon_size = int(data.get("icon_size", 48))
         self.radius = int(data.get("radius", 200))
         # Safely get the new setting (defaults to True if missing)
-        self.clamp_to_screen = data.get("clamp_to_screen", True) 
+        self.clamp_to_screen = data.get("clamp_to_screen", True)
 
         # -----------------------------
         # Load apps
@@ -47,7 +42,7 @@ class MiniDeck:
         self.icon_provider = QFileIconProvider()
         for app in self.list_apps:
             app.load_icon(self.icon_provider)
-            
+
         # -----------------------------
         # Overlay
         # -----------------------------
@@ -67,20 +62,13 @@ class MiniDeck:
         # -----------------------------
         # Hotkeys
         # -----------------------------
-        self.hotkeys = HotKeyListener(
-            self.on_hotkey_press,
-            self.on_hotkey_release
-        )
+        self.hotkeys = HotKeyListener(self.on_hotkey_press, self.on_hotkey_release)
 
         # -----------------------------
         # Settings Window
         # -----------------------------
         self.settings_window = SettingsWindow(
-            self.list_apps,
-            self.overlay,
-            self.icon_size,
-            self.radius,
-            self.hotkeys
+            self.list_apps, self.overlay, self.icon_size, self.radius, self.hotkeys
         )
 
         # Start hidden
@@ -90,8 +78,10 @@ class MiniDeck:
         # System Tray
         # -----------------------------
         self.tray_icon = QSystemTrayIcon(
-            self.app.style().standardIcon(self.app.style().StandardPixmap.SP_ComputerIcon),
-            self.app
+            self.app.style().standardIcon(
+                self.app.style().StandardPixmap.SP_ComputerIcon
+            ),
+            self.app,
         )
 
         tray_menu = QMenu()
@@ -121,6 +111,7 @@ class MiniDeck:
         if self.is_first_run:
             # Increase delay slightly to ensure Windows is ready to show the toast
             from PyQt6.QtCore import QTimer
+
             QTimer.singleShot(2000, self.show_welcome_message)
 
     def show_welcome_message(self):
@@ -129,7 +120,7 @@ class MiniDeck:
             "MiniDeck is Ready!",
             "Press Win + Shift to open your Radial Menu. Right-click the tray icon for settings.",
             QSystemTrayIcon.MessageIcon.Information,
-            5000 # Show for 5 seconds
+            5000,  # Show for 5 seconds
         )
 
     # -----------------------------

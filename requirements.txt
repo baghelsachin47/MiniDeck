@@ -1,7 +1,15 @@
+altgraph==0.17.5
+packaging==26.0
+pefile==2024.8.26
 psutil==7.2.2
+pyinstaller==6.19.0
+pyinstaller-hooks-contrib==2026.3
 pynput==1.8.1
 PyQt6==6.10.2
 PyQt6-Qt6==6.10.2
 PyQt6_sip==13.11.1
 pywin32==311
+pywin32-ctypes==0.2.3
+ruff==0.15.6
+setuptools==82.0.1
 six==1.17.0
